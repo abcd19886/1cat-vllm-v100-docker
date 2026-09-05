@@ -34,16 +34,11 @@ jobs:
           if [ -n "${{ inputs.version }}" ]; then
             VERSION="${{ inputs.version }}"
           else
-            VERSION=$(curl -sL "https://api.github.com/repos/1CatAI/1Cat-vLLM/releases/latest" | \
+            VERSION=$(curl -sL "https://api.github.com/repos/abcd19886/1Cat-vLLM/releases/latest" | \
               python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])")
           fi
 
           echo "Latest 1Cat-vLLM release: ${VERSION}"
-
-          # Construct wheel URL
-          WHEEL_URL="https://github.com/1CatAI/1Cat-vLLM/releases/download/${VERSION}/1cat_vllm-$(echo ${VERSION} | sed 's/v//')-cp312-cp312-linux_x86_64.whl"
-
-          echo "Wheel URL: ${WHEEL_URL}"
 
           # Check if image already exists
           IMAGE_TAG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${VERSION}"
@@ -109,7 +104,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile
+          file: ./docker/Dockerfile
           push: true
           tags: |
             ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
